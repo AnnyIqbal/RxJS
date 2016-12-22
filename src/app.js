@@ -28,7 +28,7 @@ inputStream$.subscribe(
         // console.log(e);
         console.log(e.target.value); // the value we type in the input box
         // console.log(e.currentTarget.value); // the value we type in the input box
-        div.append(e.target.value);
+        div.append(e.target.value); // appends the div to render the typed chars as in 2way data binding of angular2
     },
     function(err) {
         console.log(err);
