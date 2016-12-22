@@ -2,11 +2,13 @@ import $ from 'jquery';
 import Rx from 'rxjs/Rx';
 
 const button = $('#button');
+
 const btnStream$ = Rx.Observable.fromEvent(button, 'click');
 
 btnStream$.subscribe(
     function(e) {
-        console.log("event");
+        console.log(e);
+        console.log(e.target.innerHTML); // innerHTML of button tags
     },
     function(err) {
         console.log(err);
@@ -15,3 +17,24 @@ btnStream$.subscribe(
         console.log("Completed!");
     }
 );
+
+const input = $('#input');
+const div = $('#div');
+
+const inputStream$ = Rx.Observable.fromEvent(input, 'keyup');
+
+inputStream$.subscribe(
+    function(e) {
+        // console.log(e);
+        console.log(e.target.value); // the value we type in the input box
+        // console.log(e.currentTarget.value); // the value we type in the input box
+        div.append(e.target.value);
+    },
+    function(err) {
+        console.log(err);
+    },
+    function() {
+        console.log("Completed");
+    }
+);
+
