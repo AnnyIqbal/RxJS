@@ -1,13 +1,24 @@
 import $ from 'jquery';
 import Rx from 'rxjs/Rx';
+/*
+// OBSERVABLES FROM SCRATCH
 
-// OBSERVABLES FROM ARRAY 
+const a$ = new Rx.Observable(observer => {
+    console.log("first value");
+    observer.next('abc');
+    observer.next('xyz');
 
-const numbers = [01, 12, 23, 34, 45, 56, 67, 78, 89, 90];
+    observer.error(new Error('Something went wrong!'));
 
-const numbers$ = Rx.Observable.from(numbers);
+    setTimeout(function(){
+        observer.next('hello world');
+        observer.complete();
+    }, 3000);
+});
 
-numbers$.subscribe(
+a$
+.catch(err => Rx.Observable.of(err))
+.subscribe(
     v => {
         console.log(v);
     },
@@ -15,6 +26,9 @@ numbers$.subscribe(
         console.log(err);
     },
     complete => {
-        console.log("Completed");
-    }
-);
+        console.log('Completed');
+});
+*/
+
+// OBSERVABLES FROM PROMISE
+
