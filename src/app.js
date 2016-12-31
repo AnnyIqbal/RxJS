@@ -48,12 +48,13 @@
 //         return val % 2 !== 0; // filter odd numbers in range of 1-5
 //     })
 //     .subscribe(x => console.log(x));
-//step09: reduce
+//step09: reduce <function kya hai???
 var Rx = require('rxjs/Rx');
-var source = Rx.Observable.range(1, 5)
+// const source = Rx.Observable.range(1,5)
+var source = Rx.Observable.from([1, 2, 3, 4])
     .reduce(function (a, b) { return a + b; })
     .subscribe(function (x) { return console.log(x); });
-//step10: reduce average
+//step10: reduce average smjh ni arha??
 // import Rx = require('rxjs/Rx');
 // var range = Rx.Observable.range(0, 5)
 //     .reduce((prev, cur) => {

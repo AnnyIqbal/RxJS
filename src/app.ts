@@ -58,26 +58,30 @@
 //     })
 //     .subscribe(x => console.log(x));
 
-//step09: reduce
-import Rx = require('rxjs/Rx');
-
-const source = Rx.Observable.range(1,5)
-    .reduce((a: number, b: number) => {return a+b;})
-    .subscribe(x=> console.log(x));
-
-//step10: reduce average
+//step09: reduce :multiple values ko single value me convert krta hai
 // import Rx = require('rxjs/Rx');
 
-// var range = Rx.Observable.range(0, 5)
-//     .reduce((prev, cur) => {
-//         return {
-//             sum: prev.sum + cur,
-//             count: prev.count + 1
-//         };
-//     }, { sum: 0, count: 0 })
-//     .map((o) => {
-//         return o.sum / o.count;
-//     })
-//     .subscribe((x) => {
-//         console.log('Average is: ', x);
-//     });
+// const src = Rx.Observable.range(1,5)
+//     .reduce((a: number, b: number) => {return a+b;})
+//     .subscribe(x=> console.log(x));
+
+// const source = Rx.Observable.from([1,2,3,4])
+//     .reduce((a: number, b: number) => {return a+b;})
+//     .subscribe(x=> console.log(x));
+
+//step10: reduce average smjh ni arha??
+import Rx = require('rxjs/Rx');
+
+var range = Rx.Observable.range(0, 5)
+    .reduce((prev, cur) => {
+        return {
+            sum: prev.sum + cur,
+            count: prev.count + 1
+        };
+    }, { sum: 0, count: 0 })
+    .map((o) => {
+        return o.sum / o.count;
+    })
+    .subscribe((x) => {
+        console.log('Average is: ', x);
+    });
