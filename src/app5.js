@@ -1,6 +1,6 @@
 // import { Observable } from 'rxjs/';
 // import Rx from 'rxjs/Rx';
-
+"use strict";
 //step 02: filter
 // const source = Observable.fromEvent(document, 'click')
 //     .filter( function(x: MouseEvent) {
@@ -11,7 +11,6 @@
 //         function(x: MouseEvent){
 //             console.log('x: ' + x.clientX + ', y: ' + x.clientY);
 //     });
-
 //step 03: create
 // const source : Rx.Observable<string> = Observable.create(
 //     function(x: Rx.Observer<string>) {
@@ -20,7 +19,6 @@
 //         x.next('Pqr');
 //         x.complete();
 // });
-
 // source.subscribe(
 //     x => {
 //         console.log('Next : ' +x);
@@ -31,24 +29,18 @@
 //     function() {
 //         console.log('Completed');
 //     });
-
 //step 04 : ajax ni smjh aya??
-
 //step06: merge
 // import Rx = require('rxjs/Rx');
-
-
 // var a = Rx.Observable.interval(200).map(function(i: number) {
 //     return 'A' + i;
 // });
 // var b = Rx.Observable.interval(100).map(function(i: number) {
 //     return 'B' + i;
 // });
-
 // var m = Rx.Observable.merge(a, b)
 //     .take(10)
 //     .subscribe(x => { console.log(x);});
-
 //step08: filter even: filters an observable according to condition
 /*
 import Rx = require('rxjs/Rx');
@@ -89,10 +81,9 @@ var range = Rx.Observable.range(0, 5)
     .subscribe((x) => {
         console.log('Average is: ', x); //2 returned by map
         // console.log('count: '+x.count); // 5: 0-4
-        // console.log('sum: '+ x.sum); // 10 : 0+1+2+3+4 
+        // console.log('sum: '+ x.sum); // 10 : 0+1+2+3+4
     });
 */
-
 // step 11: scan (reduce ki trha hi accumulation krta hai mgr ye har intermediate result ko emit krte hue final result tk jata hai)
 // description: apply a function to each item emitted by an Observable, sequentially, and emit each successive value
 /*
@@ -133,39 +124,27 @@ var avg = Rx.Observable.interval(1000)
 // Object {sum: 45, count: 10} = 4.5
 
 */
-
 //step 12: subject
 // acts both as an observer and as an Observable. Because it is an observer, it can subscribe to one or more Observables, and 
 // because it is an Observable, it can pass through the items it observes by reemitting them, and it can also emit new items.
-/*
-import Rx = require('rxjs/Rx');
-
+var Rx_1 = require('rxjs/Rx');
 //A Subject allows us to push and pull values to the underlying Observable.
-const simpleStream$ = new Rx.Subject<string>();
-
-simpleStream$.subscribe((value) => {  
-   console.log("firstObservable: " + value);
+var simpleStream$ = new Rx_1["default"].Subject();
+simpleStream$.subscribe(function (value) {
+    console.log("firstObservable: " + value);
 });
-
 simpleStream$.next("a");
 simpleStream$.next("b");
-
-
-simpleStream$.subscribe((value) => {  
-   console.log("secondObservable: " + value);
+simpleStream$.subscribe(function (value) {
+    console.log("secondObservable: " + value);
 });
-
 simpleStream$.next("c");
-
-simpleStream$.subscribe((value) => {  
-   console.log("thirdObservable: " + value);
+simpleStream$.subscribe(function (value) {
+    console.log("thirdObservable: " + value);
 });
-
 simpleStream$.next("d");
-
 // Each notification is broadcasted to all subscribed observers 
 // thats why, last 2 lines (c and d) are being displayed 2 times each time for a subscription
-*/
 /*
 const subject = new Rx.Subject();
 
@@ -183,7 +162,6 @@ var s = subject.subscribe(
 subject.next(1);
 subject.complete();
 */
-
 // step 13: behavior subject
 //When an observer subscribes to a BehaviorSubject, it begins by emitting the item most recently emitted by the source Observable(or a 
 //seed/default value if none has yet been emitted) and then continues to emit any other items emitted later by the source Observable(s).
@@ -192,7 +170,7 @@ import Rx = require('rxjs/Rx');
 
 const simpleStream$ = new Rx.BehaviorSubject<string>("z");
 
-simpleStream$.subscribe((value) => {  
+simpleStream$.subscribe((value) => {
    console.log("firstObserver: " + value);
 });
 
@@ -200,14 +178,13 @@ simpleStream$.next("a");
 simpleStream$.next("b");
 
 
-simpleStream$.subscribe((value) => {  
+simpleStream$.subscribe((value) => {
    console.log("secondObserver: " + value);
 });
 
 simpleStream$.next("c");
 simpleStream$.next("d");
 */
-
 // step 14: replay subject
 // ReplaySubject emits to any observer all of the items that were emitted by the source Observable(s), regardless of when the observer subscribes.
 /*
@@ -215,7 +192,7 @@ import Rx = require('rxjs/Rx');
 
 const simpleStream$ = new Rx.ReplaySubject<string>(2);
 
-simpleStream$.subscribe((value) => {  
+simpleStream$.subscribe((value) => {
    console.log("firstObserver: " + value);
 });
 
@@ -223,7 +200,7 @@ simpleStream$.next("a");
 simpleStream$.next("b");
 // simpleStream$.complete(); //yhn complete krdene se iske bad k c or d ni chalenge
 
-simpleStream$.subscribe((value) => {  
+simpleStream$.subscribe((value) => {
    console.log("secondObserver: " + value);
 });
 
@@ -231,23 +208,22 @@ simpleStream$.next("c");
 simpleStream$.next("d");
 
 */
-
 //step 15: publish subject
 //The AsyncSubject is a variant where only the last value of the Observable execution is sent to its observers, and only when the execution completes.
 // (If the source Observable does not emit any values, the AsyncSubject also completes without emitting any values.)
-
+/*
 import Rx = require('rxjs/Rx');
 
 const simpleStream$ = new Rx.AsyncSubject<string>();
 
-simpleStream$.subscribe((value) => {  
+simpleStream$.subscribe((value) => {
    console.log("firstObserver: " + value);
 });
 
 simpleStream$.next("a");
 simpleStream$.next("b");
 
-simpleStream$.subscribe((value) => {  
+simpleStream$.subscribe((value) => {
    console.log("secondObserver: " + value);
 });
 
@@ -255,3 +231,4 @@ simpleStream$.next("c");
 simpleStream$.next("d");
 
 simpleStream$.complete(); //comment this out and no event will be sent as it won't be completed
+*/ 

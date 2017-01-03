@@ -2,6 +2,7 @@ import $ from 'jquery';
 import Rx from 'Rxjs/Rx';
 
 // OPERATORS
+
 // 1. INTERVALS: returns an observable sequence that produces a value after each period
 /*
 const source$ = Rx.Observable.interval(100)  // produce the value after the specified interval, i.e. 500ms this will go on forever
@@ -147,7 +148,7 @@ Rx.Observable.of('Hello')
 */
 // 9. SWITCH MAP: transforms the items that are emitted by an observable into observables and then flatens the emissions into a single observable
 // also called flat maps in rxjs floor
-
+/*
 function getUser(username) {
     return $.ajax({
         url: 'https://api.github.com/users/' + username,
@@ -178,3 +179,4 @@ const input$ = Rx.Observable.fromEvent($('#input'), 'keyup')
         $('#url').text(x.data.url);
         $('#repos').text("Public Repos: " + x.data.public_repos);
     });
+*/
