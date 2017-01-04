@@ -170,41 +170,60 @@ var suggestion1Stream = Rx.Observable.of('https://api.github.com/users')
 // NOW REMAINING PROBLEM IS "on refresh, clear the suggestions", so we can simply map refresh clicks to null suggestion data, and include that in the suggestion1Stream, as such:
 //10.
 
-// var refreshClickStream = Rx.Observable.fromEvent($('#click'), 'click');
-// var close1ClickStream = Rx.Observable.fromEvent($('#closebtn'), 'click');
+var refreshClickStream = Rx.Observable.fromEvent($('#click'), 'click'); //click event ka obj
+var close1ClickStream = Rx.Observable.fromEvent($('#close1btn'), 'click');
+var close2ClickStream = Rx.Observable.fromEvent($('#close2btn'), 'click');
+var close3ClickStream = Rx.Observable.fromEvent($('#close3btn'), 'click');
 
-// var requestStream = refreshClickStream
-//   .startWith('')
-//   .map(() => {
-//     var randomOffset = Math.floor(Math.random()*500);
-//     return 'https://api.github.com/users?since=' + randomOffset;
-//   });
+var requestStream = refreshClickStream
+  .startWith('')
+  .map(() => {
+    var randomOffset = Math.floor(Math.random()*500);
+    return 'https://api.github.com/users?since=' + randomOffset;
+  }); //gives the url with a random value each time the refresh btn is clicked
 
-// var responseStream = requestStream
-//   .flatMap(function(requestUrl) {
-//     return Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));
-//   });
+var responseStream = requestStream
+  .flatMap(function(requestUrl) {
+    return Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));
+  }); //array of objects of github users
 
-// var suggestion1Stream = close1ClickStream
-//   .startWith('')
-//   .combineLatest(responseStream,             
-//     function(click, listUsers) {
-//       console.log(listUsers);
-//       return listUsers[Math.floor(Math.random()*listUsers.length)];
-//     }
-//   )
-//   .merge(
-//     refreshClickStream.map(() => null)
-//   )
-//   .startWith(null)
-//   .subscribe(function(suggestion) {
-//       if(suggestion !== null) {
-//         console.log(suggestion.url);
-//       }
-// });
+function suggestionStream(closeStream) {
+  return closeStream
+  .startWith('')
+  .combineLatest(responseStream,             
+    function(click, listUsers) { // listUsers is an array of objects of github users, click
+      console.log('click: ', click);
+      return listUsers[Math.floor(Math.random()*listUsers.length)];
+    }
+  )
+  .merge(
+    refreshClickStream.map(() => null)
+  )
+  .startWith(null);
+}
+  var suggestionStream1 = suggestionStream(close1ClickStream);
+  suggestionStream1.subscribe(suggestion => {
+      if(suggestion !== null) {
+        console.log(suggestion.url);
+      }
+  });
+
+var suggestionStream2 = suggestionStream(close2ClickStream);
+suggestionStream2.subscribe(suggestion => {
+      if(suggestion !== null) {
+        console.log(suggestion.url);
+      }
+});
+
+var suggestionStream3 = suggestionStream(close3ClickStream);
+suggestionStream3.subscribe(suggestion => {
+      if(suggestion !== null) {
+        console.log(suggestion.url);
+      }
+});
 
 // JSFiddle----------------------------------------------
-
+/*
 var refreshButton = document.querySelector('.refresh');
 var closeButton1 = document.querySelector('.close1');
 var closeButton2 = document.querySelector('.close2');
@@ -216,19 +235,21 @@ var close1ClickStream = Rx.Observable.fromEvent(closeButton1, 'click');
 var close2ClickStream = Rx.Observable.fromEvent(closeButton2, 'click');
 var close3ClickStream = Rx.Observable.fromEvent(closeButton3, 'click');
 
-var requestStream = refreshClickStream.startWith('startup click')
-    .map(function() {
+var requestStream = refreshClickStream
+    .startWith('startup click')
+    .map(() => {
         var randomOffset = Math.floor(Math.random()*500);
         return 'https://api.github.com/users?since=' + randomOffset;
     });
 
 var responseStream = requestStream
-    .flatMap(function (requestUrl) {
-        return Rx.Observable.fromPromise($.getJSON(requestUrl));
-    });
+    .flatMap(requestUrl => 
+        Rx.Observable.fromPromise($.getJSON(requestUrl))
+     );
 
 function createSuggestionStream(closeClickStream) {
-    return closeClickStream.startWith('startup click')
+    return closeClickStream
+        .startWith('startup click')
         .combineLatest(responseStream,             
             function(click, listUsers) {
                 return listUsers[Math.floor(Math.random()*listUsers.length)];
@@ -271,3 +292,4 @@ suggestion2Stream.subscribe(function (suggestedUser) {
 suggestion3Stream.subscribe(function (suggestedUser) {
     renderSuggestion(suggestedUser, '.suggestion3');
 });
+*/
