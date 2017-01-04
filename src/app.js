@@ -128,7 +128,8 @@ var source = Rx.Observable.of('mbnnmkn10')
         console.log('Completed');
     });
 */
-//8.
+//8. now
+/*
 var requestStream = Rx.Observable.of('https://api.github.com/users')
   .flatMap(requestUrl => {
       return Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));
@@ -139,10 +140,9 @@ var requestStream = Rx.Observable.of('https://api.github.com/users')
         console.log(response[i].url);
       }
   });
-
-var button = $('#click');
-
-var refreshClickStream = Rx.Observable.fromEvent(button, 'click')
+*/
+/* 
+var refreshClickStream = Rx.Observable.fromEvent($('#click'), 'click')
   .startWith('kuch bhi likh do krwadia to map hai ye ni display hoga')
   .map(() => {
     var randomOffset = Math.floor(Math.random()*500);
@@ -151,17 +151,123 @@ var refreshClickStream = Rx.Observable.fromEvent(button, 'click')
   .subscribe( x=> {
         console.log(x);
   });
-
+*/
 //PROBLEM: yahan p all responses are rendered and refresh p ++ horhe hn we need only 3 so we'll treat them separately for now
-//9. nhi hora??
-
+//so, comment the requestStream and do it like this in 9
+//9.
+/*
 var suggestion1Stream = Rx.Observable.of('https://api.github.com/users')
-  .map( listUsers => {
-    // get one random user from the list
-    console.log('listUsers: '+listUsers);
-    return listUsers[Math.floor(Math.random()*listUsers.length)];
+  .flatMap(requestUrl => {
+      return Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));
   })
-  .subscribe(suggestion => {
-  // render the 1st suggestion to the DOM
-  console.log(suggestion);
+  .map( listUsers => {
+    return listUsers[Math.floor(Math.random()*listUsers.length)]; //returns any random index to the array listUsers generated as result of responseStream
+  })
+  .subscribe(response => {
+    console.log(response.url); //response = pora object
+  });
+*/
+// NOW REMAINING PROBLEM IS "on refresh, clear the suggestions", so we can simply map refresh clicks to null suggestion data, and include that in the suggestion1Stream, as such:
+//10.
+
+// var refreshClickStream = Rx.Observable.fromEvent($('#click'), 'click');
+// var close1ClickStream = Rx.Observable.fromEvent($('#closebtn'), 'click');
+
+// var requestStream = refreshClickStream
+//   .startWith('')
+//   .map(() => {
+//     var randomOffset = Math.floor(Math.random()*500);
+//     return 'https://api.github.com/users?since=' + randomOffset;
+//   });
+
+// var responseStream = requestStream
+//   .flatMap(function(requestUrl) {
+//     return Rx.Observable.fromPromise(jQuery.getJSON(requestUrl));
+//   });
+
+// var suggestion1Stream = close1ClickStream
+//   .startWith('')
+//   .combineLatest(responseStream,             
+//     function(click, listUsers) {
+//       console.log(listUsers);
+//       return listUsers[Math.floor(Math.random()*listUsers.length)];
+//     }
+//   )
+//   .merge(
+//     refreshClickStream.map(() => null)
+//   )
+//   .startWith(null)
+//   .subscribe(function(suggestion) {
+//       if(suggestion !== null) {
+//         console.log(suggestion.url);
+//       }
+// });
+
+// JSFiddle----------------------------------------------
+
+var refreshButton = document.querySelector('.refresh');
+var closeButton1 = document.querySelector('.close1');
+var closeButton2 = document.querySelector('.close2');
+var closeButton3 = document.querySelector('.close3');
+
+
+var refreshClickStream = Rx.Observable.fromEvent(refreshButton, 'click');
+var close1ClickStream = Rx.Observable.fromEvent(closeButton1, 'click');
+var close2ClickStream = Rx.Observable.fromEvent(closeButton2, 'click');
+var close3ClickStream = Rx.Observable.fromEvent(closeButton3, 'click');
+
+var requestStream = refreshClickStream.startWith('startup click')
+    .map(function() {
+        var randomOffset = Math.floor(Math.random()*500);
+        return 'https://api.github.com/users?since=' + randomOffset;
+    });
+
+var responseStream = requestStream
+    .flatMap(function (requestUrl) {
+        return Rx.Observable.fromPromise($.getJSON(requestUrl));
+    });
+
+function createSuggestionStream(closeClickStream) {
+    return closeClickStream.startWith('startup click')
+        .combineLatest(responseStream,             
+            function(click, listUsers) {
+                return listUsers[Math.floor(Math.random()*listUsers.length)];
+            })
+        .merge(
+            refreshClickStream.map(() => null )
+        )
+        .startWith(null);
+}
+
+var suggestion1Stream = createSuggestionStream(close1ClickStream);
+var suggestion2Stream = createSuggestionStream(close2ClickStream);
+var suggestion3Stream = createSuggestionStream(close3ClickStream);
+
+
+// Rendering ---------------------------------------------------
+function renderSuggestion(suggestedUser, selector) {
+    var suggestionEl = document.querySelector(selector);
+    if (suggestedUser === null) {
+        suggestionEl.style.visibility = 'hidden';
+    } else {
+        suggestionEl.style.visibility = 'visible';
+        var usernameEl = suggestionEl.querySelector('.username');
+        usernameEl.href = suggestedUser.html_url;
+        usernameEl.textContent = suggestedUser.login;
+        var imgEl = suggestionEl.querySelector('img');
+        imgEl.src = "";
+        imgEl.src = suggestedUser.avatar_url;
+    }
+}
+
+suggestion1Stream.subscribe(function (suggestedUser) {
+    renderSuggestion(suggestedUser, '.suggestion1');
+});
+
+suggestion2Stream.subscribe(function (suggestedUser) {
+    renderSuggestion(suggestedUser, '.suggestion2');
+});
+
+suggestion3Stream.subscribe(function (suggestedUser) {
+    renderSuggestion(suggestedUser, '.suggestion3');
 });
