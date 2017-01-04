@@ -201,27 +201,38 @@ function suggestionStream(closeStream) {
   )
   .startWith(null);
 }
-  var suggestionStream1 = suggestionStream(close1ClickStream);
-  suggestionStream1.subscribe(suggestion => {
-      if(suggestion !== null) {
-        console.log(suggestion.url);
-      }
-  });
-
+var suggestionStream1 = suggestionStream(close1ClickStream);
 var suggestionStream2 = suggestionStream(close2ClickStream);
-suggestionStream2.subscribe(suggestion => {
-      if(suggestion !== null) {
-        console.log(suggestion.url);
-      }
-});
-
 var suggestionStream3 = suggestionStream(close3ClickStream);
-suggestionStream3.subscribe(suggestion => {
-      if(suggestion !== null) {
-        console.log(suggestion.url);
-      }
+
+
+// Rendering ---------------------------------------------------
+function renderSuggestion(suggestedUser, selector) {
+    var suggestionEl = document.querySelector(selector);
+    if (suggestedUser === null) {
+        suggestionEl.style.visibility = 'hidden';
+    } else {
+        suggestionEl.style.visibility = 'visible';
+        var usernameEl = suggestionEl.querySelector('.username');
+        usernameEl.href = suggestedUser.html_url;
+        usernameEl.textContent = suggestedUser.login;
+        var imgEl = suggestionEl.querySelector('img');
+        imgEl.src = "";
+        imgEl.src = suggestedUser.avatar_url;
+    }
+}
+
+suggestionStream1.subscribe(function (suggestedUser) {
+    renderSuggestion(suggestedUser, '.suggestion1');
 });
 
+suggestionStream2.subscribe(function (suggestedUser) {
+    renderSuggestion(suggestedUser, '.suggestion2');
+});
+
+suggestionStream3.subscribe(function (suggestedUser) {
+    renderSuggestion(suggestedUser, '.suggestion3');
+});
 // JSFiddle----------------------------------------------
 /*
 var refreshButton = document.querySelector('.refresh');
